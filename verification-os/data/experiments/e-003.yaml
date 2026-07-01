@@ -1,0 +1,47 @@
+id: E-003
+hypothesis_id: H-001
+kind: benchmark_eval
+title: Latent conditioning candidate vs vLLM baseline
+claim: >
+  Candidate inference stack beats preregistered baseline on throughput and cost
+  with <=1% quality regression on golden RAG suite.
+method: >
+  Run harness benchmark_eval plugin against partner-like golden set; compare to
+  stored baseline metrics from stock vLLM config.
+bias_risks:
+  - Benchmarking on synthetic data only
+  - Cherry-picked batch sizes
+thresholds:
+  plugin.speedup_vs_baseline_x:
+    op: gte
+    value: 1.3
+  standard.quality_delta_pct:
+    op: gte
+    value: -1.0
+  standard.cost_per_1m_tokens_usd:
+    op: lte
+    value: 0.15
+failure_conditions:
+  - Speedup <1.1x on partner workload
+  - Quality regression >1% on any golden task
+max_spend_usd: 5000
+decision_date: "2026-09-30"
+status: preregistered
+depends_on:
+  - E-002
+hardware:
+  gpu: NVIDIA L4 or better
+  memory_gb: 32
+  notes: Use spot/preemptible instances; pin driver and CUDA versions in manifest
+plugin_config:
+  benchmark:
+    baseline_ref: runs/R-00042/metrics.json
+    candidate_label: latent_conditioning_v0
+    quality_suite:
+      - mmlu_subset
+      - golden_rag_v1
+    perf_metrics:
+      - throughput_tok_s
+      - ttft_ms
+      - p99_latency_ms
+      - cost_per_1m_tokens_usd

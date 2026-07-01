@@ -1,0 +1,17 @@
+id: H-000
+title: REPLACE — short thesis title
+segment: REPLACE — target customer segment
+hypothesis_class: technical
+claim: >
+  REPLACE — falsifiable claim in one sentence.
+rationale: >
+  REPLACE — why this matters and what evidence would change your mind.
+pass_criteria:
+  - REPLACE — objective pass criterion 1
+kill_rules:
+  - REPLACE — condition that triggers kill
+max_spend_usd: 5000
+decision_date: "2026-12-31"
+status: active
+experiments: []
+notes: ""

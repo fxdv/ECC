@@ -1,0 +1,28 @@
+id: H-001
+title: Cross-agent latent conditioning reduces coordination error
+segment: ML platform teams running multi-agent LLM workflows
+hypothesis_class: technical
+claim: >
+  A shared latent conditioning buffer between agents reduces coordination error
+  versus explicit message passing, without >1% quality regression on partner RAG tasks.
+rationale: >
+  Paper-inspired mechanism; must be falsified on partner-like workloads before
+  any inference product narrative.
+pass_criteria:
+  - Subclaims decomposed with cost-to-falsify estimates
+  - Algebra invariants pass for projection operators
+  - Benchmark shows >=1.3x throughput or >=30% cost reduction at <=1% quality delta
+kill_rules:
+  - No design-partner pain after 40 interviews in segment
+  - Mechanism fails algebra gate twice
+  - Benchmark cannot beat vLLM baseline on partner workload after 2 iterations
+max_spend_usd: 15000
+decision_date: "2026-09-30"
+status: active
+experiments:
+  - E-001
+  - E-002
+  - E-003
+notes: >
+  Sequence by cost-to-falsify: research decomposition -> soundness gate ->
+  benchmark eval. Inference engine work only after soundness pass.
