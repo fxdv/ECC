@@ -1,0 +1,47 @@
+id: E-001
+hypothesis_id: H-001
+kind: research_paper
+title: Decompose cross-agent latent conditioning claims
+claim: 'The cross-agent latent conditioning paper yields at least two independently
+  testable subclaims with explicit acceptance criteria.
+
+  '
+rationale: 'Cheapest falsification step before GPU spend or engine implementation.
+
+  '
+method: 'Literature matrix, claim decomposition memo, map each subclaim to experiment
+  kind (soundness, profiling, benchmark_eval).
+
+  '
+bias_risks:
+- Confirmation bias toward impressive architecture
+- Overfitting decomposition to existing codebase ideas
+thresholds:
+  plugin.testable_subclaims:
+    op: gte
+    value: 2
+  plugin.estimated_cost_to_falsify_usd:
+    op: lte
+    value: 5000
+failure_conditions:
+- Fewer than 2 testable subclaims
+- All subclaims require full replication before any bench test
+max_spend_usd: 500.0
+decision_date: '2026-08-15'
+status: completed
+plugin_config:
+  paper:
+    title: Cross-Agent Latent Conditioning for Multi-Agent LLM Systems
+    claim_id: C1
+    claim: Shared latent buffer reduces coordination error vs message passing
+    subclaims:
+    - Latent projection preserves bounded error across agent handoffs
+    - Shared buffer reduces token overhead vs explicit message passing
+    - Conditioning does not collapse diversity below baseline on RAG tasks
+  replication:
+    level: design_only
+    artifacts:
+    - literature_matrix.md
+    - claim_decomposition.md
+hardware: {}
+depends_on: []

@@ -1,0 +1,22 @@
+id: E-000
+hypothesis_id: H-001
+kind: benchmark_eval
+title: REPLACE — experiment title
+claim: >
+  REPLACE — what this experiment proves or disproves.
+rationale: >
+  REPLACE — why run this now; link to riskiest assumption.
+method: >
+  REPLACE — exact procedure, tools, datasets, and controls.
+bias_risks:
+  - REPLACE — e.g. confirmation bias, underpowered sample
+thresholds:
+  standard.throughput_tok_s:
+    op: gte
+    value: 500
+failure_conditions:
+  - REPLACE — explicit fail trigger
+max_spend_usd: 1000
+decision_date: "2026-12-31"
+status: preregistered
+plugin_config: {}

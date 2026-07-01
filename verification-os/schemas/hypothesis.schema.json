@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://verification-os.local/schemas/hypothesis.schema.json",
+  "title": "Hypothesis",
+  "type": "object",
+  "required": ["id", "title", "segment", "hypothesis_class", "claim", "kill_rules", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^H-[0-9]{3,}$" },
+    "title": { "type": "string", "minLength": 3 },
+    "segment": { "type": "string" },
+    "hypothesis_class": {
+      "type": "string",
+      "enum": ["problem", "value", "technical", "operational", "scalability"]
+    },
+    "claim": { "type": "string", "minLength": 10 },
+    "rationale": { "type": "string" },
+    "pass_criteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "kill_rules": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "max_spend_usd": { "type": "number", "minimum": 0 },
+    "decision_date": { "type": "string", "format": "date" },
+    "status": {
+      "type": "string",
+      "enum": ["active", "paused", "killed", "promoted"]
+    },
+    "experiments": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": { "type": "string" }
+  }
+}

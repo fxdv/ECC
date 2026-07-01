@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://verification-os.local/schemas/experiment.schema.json",
+  "title": "Experiment",
+  "type": "object",
+  "required": [
+    "id",
+    "hypothesis_id",
+    "kind",
+    "title",
+    "claim",
+    "method",
+    "thresholds",
+    "failure_conditions",
+    "max_spend_usd",
+    "decision_date",
+    "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^E-[0-9]{3,}$" },
+    "hypothesis_id": { "type": "string", "pattern": "^H-[0-9]{3,}$" },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "research_paper",
+        "algebra_soundness",
+        "inference_engine",
+        "profiling",
+        "benchmark_eval"
+      ]
+    },
+    "title": { "type": "string", "minLength": 3 },
+    "claim": { "type": "string", "minLength": 10 },
+    "rationale": { "type": "string" },
+    "method": { "type": "string", "minLength": 10 },
+    "bias_risks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "thresholds": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["op", "value"],
+        "properties": {
+          "op": {
+            "type": "string",
+            "enum": ["gte", "lte", "eq", "neq", "exists"]
+          },
+          "value": {}
+        }
+      }
+    },
+    "failure_conditions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "max_spend_usd": { "type": "number", "minimum": 0 },
+    "decision_date": { "type": "string", "format": "date" },
+    "status": {
+      "type": "string",
+      "enum": ["preregistered", "running", "completed", "cancelled"]
+    },
+    "plugin_config": { "type": "object" },
+    "hardware": {
+      "type": "object",
+      "properties": {
+        "gpu": { "type": "string" },
+        "cpu": { "type": "string" },
+        "memory_gb": { "type": "number" },
+        "notes": { "type": "string" }
+      }
+    },
+    "depends_on": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

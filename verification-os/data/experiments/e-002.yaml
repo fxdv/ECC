@@ -1,0 +1,39 @@
+id: E-002
+hypothesis_id: H-001
+kind: algebra_soundness
+title: Latent projection operator invariant gate
+claim: >
+  Required algebraic invariants for the latent projection operator hold under
+  defined bounds before inference integration.
+method: >
+  Run invariant checks against specs/latent_buffer_invariants.md using stub
+  checker (upgrade to Z3 when spec stabilizes).
+bias_risks:
+  - Waiving failed invariants to unblock engine work
+thresholds:
+  plugin.invariants_required_passed:
+    op: gte
+    value: 1
+  plugin.invariants_required_total:
+    op: gte
+    value: 1
+failure_conditions:
+  - Any required invariant fails without documented waiver
+max_spend_usd: 1000
+decision_date: "2026-08-30"
+status: preregistered
+depends_on:
+  - E-001
+plugin_config:
+  soundness:
+    spec_ref: specs/latent_buffer_invariants.md
+    checker: stub
+    invariants:
+      - id: INV-1
+        statement: Projection preserves latent norm bound
+        required: true
+        dry_run_pass: true
+      - id: INV-2
+        statement: Composition respects associativity on agent merge
+        required: true
+        dry_run_pass: true
