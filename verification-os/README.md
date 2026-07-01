@@ -31,6 +31,13 @@ vos decision record --hypothesis H-001 --outcome escalate --memo "Baseline beat;
 
 # List ledger state
 vos status
+
+# Generate harness chain + run pipeline
+vos harness chain --hypothesis H-001 --chain research_to_product --claim "Shared latent buffer reduces coordination error"
+vos harness pipeline --hypothesis H-001 --dry-run
+
+# Launch HI dashboard (http://127.0.0.1:8080)
+vos dashboard --port 8080
 ```
 
 ## Architecture
@@ -38,7 +45,8 @@ vos status
 ```
 verification-os/
 ├── vos_core/           # Layer 1 — permanent verification engine
-├── harness/            # Shared runner + metric shell + plugins
+├── harness/            # Generator, pipeline, plugins, metrics
+├── dashboard/          # FastAPI + HI dashboard UI
 ├── data/               # Hypotheses, experiments, run artifacts
 ├── templates/          # Copy-paste starters
 └── ventures/           # Promoted wedges (empty until pass criteria)
@@ -55,6 +63,24 @@ See [SPEC.md](./SPEC.md) for the full contract.
 | `inference_engine` | Serving stack build, smoke, regression |
 | `profiling` | Latency, memory, GPU utilization sweeps |
 | `benchmark_eval` | Baseline vs candidate with quality gates |
+
+## Harness commands
+
+| Command | Purpose |
+|---------|---------|
+| `vos harness generate` | Create one preregistered experiment YAML from a claim |
+| `vos harness chain` | Generate linked experiment chain (`research_to_product`, `optimization_wedge`, `paper_only`) |
+| `vos harness pipeline` | Run hypothesis experiments in dependency order |
+
+## HI Dashboard
+
+The dashboard surfaces hypothesis pipelines, recent runs, decisions, and one-click dry-run execution.
+
+```bash
+vos dashboard --port 8080
+```
+
+API endpoints: `/api/overview`, `/api/hypotheses`, `/api/experiments`, `/api/runs`, `/api/decisions`
 
 ## Weekly workflow
 

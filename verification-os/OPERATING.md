@@ -40,6 +40,8 @@ vos status
 vos run data/experiments/e-001.yaml --dry-run
 vos run data/experiments/e-002.yaml --dry-run
 vos run data/experiments/e-003.yaml --dry-run
+vos harness pipeline --hypothesis H-001 --dry-run
+vos dashboard --port 8080
 vos decision record --hypothesis H-001 --outcome escalate --memo "Soundness passed; schedule partner benchmark"
 ```
 

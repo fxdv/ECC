@@ -67,3 +67,4 @@ def test_ledger_status_summary():
     summary = ledger.status_summary()
     assert summary["hypotheses"]["total"] >= 1
     assert summary["experiments"]["total"] >= 3
+    assert "total" in summary["runs"]

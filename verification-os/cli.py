@@ -10,6 +10,8 @@ from vos_core.experiment_runner import ExperimentRunner
 from vos_core.ledger import Ledger
 from vos_core.models import DecisionRecord, Experiment, Hypothesis
 from vos_core.validate import dump_yaml, load_yaml
+from harness.generator import HarnessGenerator, HarnessSpec
+from harness.pipeline import HarnessPipeline
 
 
 ROOT = Path(__file__).resolve().parent
@@ -80,6 +82,61 @@ def cmd_decision_record(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_harness_generate(args: argparse.Namespace) -> int:
+    generator = HarnessGenerator(ROOT)
+    spec = HarnessSpec(
+        hypothesis_id=args.hypothesis,
+        kind=args.kind,
+        claim=args.claim,
+        title=args.title,
+        decision_date=args.decision_date,
+    )
+    experiment = generator.generate_experiment(spec)
+    print(f"Generated experiment {experiment.id} at data/experiments/{experiment.id.lower()}.yaml")
+    return 0
+
+
+def cmd_harness_chain(args: argparse.Namespace) -> int:
+    generator = HarnessGenerator(ROOT)
+    created = generator.generate_chain(
+        hypothesis_id=args.hypothesis,
+        chain=args.chain,
+        base_claim=args.claim,
+    )
+    ids = ", ".join(e.id for e in created)
+    print(f"Generated chain ({len(created)} experiments): {ids}")
+    return 0
+
+
+def cmd_harness_pipeline(args: argparse.Namespace) -> int:
+    pipeline = HarnessPipeline(ROOT)
+    result = pipeline.run(
+        args.hypothesis,
+        dry_run=args.dry_run,
+        stop_on_fail=not args.continue_on_fail,
+    )
+    print(json.dumps({
+        "hypothesis_id": result.hypothesis_id,
+        "completed": result.completed,
+        "stopped_at": result.stopped_at,
+        "outcomes": result.outcomes,
+    }, indent=2))
+    return 0 if result.completed else 1
+
+
+def cmd_dashboard(args: argparse.Namespace) -> int:
+    import uvicorn
+
+    uvicorn.run(
+        "dashboard.api:app",
+        host=args.host,
+        port=args.port,
+        reload=args.reload,
+        factory=False,
+    )
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="vos", description="VerificationOS CLI")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -116,6 +173,35 @@ def build_parser() -> argparse.ArgumentParser:
     decision_record.add_argument("--experiment", default="")
     decision_record.add_argument("--run", default="")
     decision_record.set_defaults(func=cmd_decision_record)
+
+    harness = sub.add_parser("harness", help="Harness generation and pipelines")
+    harness_sub = harness.add_subparsers(dest="harness_command", required=True)
+
+    harness_generate = harness_sub.add_parser("generate", help="Generate one experiment YAML")
+    harness_generate.add_argument("--hypothesis", required=True)
+    harness_generate.add_argument("--kind", required=True)
+    harness_generate.add_argument("--claim", required=True)
+    harness_generate.add_argument("--title", default="")
+    harness_generate.add_argument("--decision-date", default="2026-12-31")
+    harness_generate.set_defaults(func=cmd_harness_generate)
+
+    harness_chain = harness_sub.add_parser("chain", help="Generate experiment chain for a thesis")
+    harness_chain.add_argument("--hypothesis", required=True)
+    harness_chain.add_argument("--chain", default="research_to_product")
+    harness_chain.add_argument("--claim", default="")
+    harness_chain.set_defaults(func=cmd_harness_chain)
+
+    harness_pipeline = harness_sub.add_parser("pipeline", help="Run hypothesis experiment pipeline")
+    harness_pipeline.add_argument("--hypothesis", required=True)
+    harness_pipeline.add_argument("--dry-run", action="store_true")
+    harness_pipeline.add_argument("--continue-on-fail", action="store_true")
+    harness_pipeline.set_defaults(func=cmd_harness_pipeline)
+
+    dashboard = sub.add_parser("dashboard", help="Launch HI dashboard")
+    dashboard.add_argument("--host", default="127.0.0.1")
+    dashboard.add_argument("--port", type=int, default=8080)
+    dashboard.add_argument("--reload", action="store_true")
+    dashboard.set_defaults(func=cmd_dashboard)
 
     return parser
 
